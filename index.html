@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>💔 Sad Cat · Do You Love Me?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #2b1c2f 0%, #181020 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Poppins', 'Quicksand', system-ui, -apple-system, 'Comic Neue', cursive;
+            padding: 16px;
+            position: relative;
+            overflow-x: hidden;
+            touch-action: pan-y; /* allow vertical scroll but preserve interactions */
+        }
+
+        /* letter envelope style - fully responsive */
+        .letter-card {
+            background: #fffef5;
+            width: 100%;
+            max-width: 560px;
+            border-radius: 48px;
+            box-shadow: 0 35px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 235, 200, 0.5);
+            position: relative;
+            z-index: 20;
+            transition: all 0.2s ease;
+        }
+
+        .letter-paper {
+            background: #fffbf0;
+            padding: 2rem 1.5rem 2rem;
+            border-radius: 44px;
+            position: relative;
+            background-image: repeating-linear-gradient(#f7f1e0 0px, #f7f1e0 2px, transparent 2px, transparent 28px);
+            box-shadow: inset 0 0 18px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* sad cat lying on the letter (responsive size) */
+        .lying-cat {
+            position: absolute;
+            top: -44px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 5rem;
+            filter: drop-shadow(0 12px 12px rgba(0, 0, 0, 0.25));
+            z-index: 25;
+            pointer-events: none;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            animation: gentleLie 2.2s infinite ease-in-out;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        @keyframes gentleLie {
+            0% { transform: translateX(-50%) rotate(0deg) translateY(0px);}
+            50% { transform: translateX(-50%) rotate(2deg) translateY(4px);}
+            100% { transform: translateX(-50%) rotate(0deg) translateY(0px);}
+        }
+
+        .question-text {
+            font-size: 2.1rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 0.8rem 0 1.2rem 0;
+            background: linear-gradient(135deg, #d14b6e, #ac3a58);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+            word-break: keep-all;
+            padding: 0 0.2rem;
+        }
+
+        /* button panel */
+        .button-panel {
+            display: flex;
+            justify-content: center;
+            gap: 1.3rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0 1rem;
+            position: relative;
+        }
+
+        .action-btn {
+            font-size: 1.65rem;
+            font-weight: bold;
+            padding: 0.7rem 1.4rem;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.08s ease, box-shadow 0.1s;
+            box-shadow: 0 7px 0 rgba(0, 0, 0, 0.12);
+            min-width: 130px;
+            letter-spacing: 1px;
+            touch-action: manipulation;
+            background: linear-gradient(145deg, #ffb845, #ff9f2c);
+            color: #2d1d08;
+        }
+
+        .btn-yes {
+            background: linear-gradient(145deg, #ffb347, #ff9a2e);
+            color: #2f1f0a;
+            border-bottom: 3px solid #bd6f1a;
+        }
+
+        .btn-no {
+            background: linear-gradient(145deg, #745e8a, #543e6b);
+            color: #fcf0ff;
+            border-bottom: 3px solid #34224a;
+        }
+
+        /* message area */
+        .msg-area {
+            margin-top: 1.8rem;
+            min-height: 108px;
+            background: rgba(0, 0, 0, 0.045);
+            border-radius: 60px;
+            padding: 0.9rem 1.2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #3a2a44;
+            text-align: center;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+
+        .dull-emoji {
+            filter: grayscale(0.2);
+            opacity: 0.85;
+            font-size: 1.7rem;
+        }
+
+        /* floating tears / petals */
+        .floating-tear {
+            position: fixed;
+            pointer-events: none;
+            font-size: 1.5rem;
+            z-index: 999;
+            animation: fallTear 2.8s linear forwards;
+        }
+
+        @keyframes fallTear {
+            0% { transform: translateY(-30px) rotate(0deg); opacity: 0.9;}
+            100% { transform: translateY(100vh) rotate(12deg); opacity: 0;}
+        }
+
+        .cat-paw {
+            position: absolute;
+            bottom: 8px;
+            right: 18px;
+            font-size: 1.3rem;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* responsive tweaks */
+        @media (max-width: 580px) {
+            .letter-paper {
+                padding: 1.5rem 1rem 1.6rem;
+            }
+            .lying-cat {
+                font-size: 4rem;
+                top: -36px;
+            }
+            .question-text {
+                font-size: 1.7rem;
+                margin-top: 0.4rem;
+            }
+            .action-btn {
+                font-size: 1.35rem;
+                padding: 0.55rem 1rem;
+                min-width: 108px;
+            }
+            .msg-area {
+                font-size: 1rem;
+                min-height: 92px;
+                padding: 0.7rem;
+            }
+            .dull-emoji {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 440px) {
+            .lying-cat {
+                font-size: 3.2rem;
+                top: -28px;
+            }
+            .question-text {
+                font-size: 1.45rem;
+            }
+            .action-btn {
+                font-size: 1.2rem;
+                padding: 0.5rem 0.85rem;
+                min-width: 95px;
+            }
+            .msg-area {
+                font-size: 0.9rem;
+            }
+        }
+
+        @keyframes shakeLetter {
+            0% { transform: translateX(0px) rotate(0deg);}
+            25% { transform: translateX(5px) rotate(1deg);}
+            75% { transform: translateX(-5px) rotate(-1deg);}
+            100% { transform: translateX(0px) rotate(0deg);}
+        }
+
+        .dodge-flash {
+            filter: drop-shadow(0 0 6px #ffb347);
+        }
+
+        footer {
+            position: fixed;
+            bottom: 8px;
+            font-size: 0.6rem;
+            color: rgba(255, 225, 200, 0.6);
+            width: 100%;
+            text-align: center;
+            z-index: 15;
+            pointer-events: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="letter-card">
+    <div class="letter-paper">
+        <!-- sad cat lying on the letter -->
+        <div class="lying-cat" id="lyingCat">
+            😿💧  😔💧
+        </div>
+        
+        <div class="question-text">
+            💌 Do you love me? 💌
+        </div>
+        
+        <div class="button-panel">
+            <button class="action-btn btn-yes" id="yesButton">💖 YES 💖</button>
+            <button class="action-btn btn-no" id="noButton">😿 NO 😿</button>
+        </div>
+        
+        <div class="msg-area" id="messageBox">
+            <span>🐾 a letter from a sad cat...</span>
+        </div>
+        <div class="cat-paw">🐾💔</div>
+    </div>
+</div>
+<footer>💧 lying cat waits ... yes button is shy 💧</footer>
+
+<script>
+    (function() {
+        // DOM elements
+        const yesBtn = document.getElementById('yesButton');
+        const noBtn = document.getElementById('noButton');
+        const messageDiv = document.getElementById('messageBox');
+        const lyingCat = document.getElementById('lyingCat');
+
+        // ========== YES BUTTON DODGE LOGIC (mobile + desktop) ==========
+        let dodgeActive = true;
+        let lastDodgeTime = 0;
+        let resetYesTimer = null;
+        
+        // core dodge function: moves YES button away from pointer / finger
+        function dodgeYesButton(clientX, clientY) {
+            if (!dodgeActive) return false;
+            if (!yesBtn) return false;
+            
+            const rect = yesBtn.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const distance = Math.hypot(clientX - centerX, clientY - centerY);
+            const DODGE_THRESHOLD = 108; // pixels
+            
+            if (distance < DODGE_THRESHOLD) {
+                // bounded random shift (button stays inside card area)
+                let shiftX = (Math.random() - 0.5) * 150;
+                let shiftY = (Math.random() - 0.5) * 90;
+                shiftX = Math.min(Math.max(shiftX, -130), 130);
+                shiftY = Math.min(Math.max(shiftY, -90), 95);
+                
+                yesBtn.style.transform = `translate(${shiftX}px, ${shiftY}px)`;
+                yesBtn.style.transition = 'transform 0.07s cubic-bezier(0.2, 1.2, 0.4, 1)';
+                yesBtn.classList.add('dodge-flash');
+                setTimeout(() => yesBtn.classList.remove('dodge-flash'), 140);
+                lastDodgeTime = Date.now();
+                
+                if (resetYesTimer) clearTimeout(resetYesTimer);
+                resetYesTimer = setTimeout(() => {
+                    if (dodgeActive && yesBtn) {
+                        yesBtn.style.transform = '';
+                    }
+                }, 520);
+                return true;
+            } else {
+                if (resetYesTimer) clearTimeout(resetYesTimer);
+                resetYesTimer = setTimeout(() => {
+                    if (dodgeActive && yesBtn) yesBtn.style.transform = '';
+                }, 380);
+                return false;
+            }
+        }
+        
+        // event handlers for pointer (mouse + touch)
+        function handlePointerMove(e) {
+            if (!dodgeActive) return;
+            let clientX, clientY;
+            if (e.touches && e.touches.length) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else if (e.clientX !== undefined) {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            } else {
+                return;
+            }
+            dodgeYesButton(clientX, clientY);
+        }
+        
+        function handleTouchStart(e) {
+            if (!dodgeActive) return;
+            if (e.touches && e.touches.length) {
+                const touch = e.touches[0];
+                dodgeYesButton(touch.clientX, touch.clientY);
+            }
+        }
+        
+        // ========== YES CLICK: show "abadham cheppaku" with dull emoji ==========
+        function onYesClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const now = Date.now();
+            // if dodged recently (within 280ms) => evade, show tease
+            if (dodgeActive && (now - lastDodgeTime < 280)) {
+                messageDiv.innerHTML = `<span>😼💨 The YES button dodged! Try again? 💨</span><span class="dull-emoji">😿🌀</span>`;
+                if (lyingCat) {
+                    lyingCat.style.animation = 'none';
+                    lyingCat.innerHTML = '😾💢 😼💧';
+                    setTimeout(() => {
+                        if(lyingCat) lyingCat.innerHTML = '😿💧  😔💧';
+                        lyingCat.style.animation = 'gentleLie 2.2s infinite ease-in-out';
+                    }, 800);
+                }
+                setTimeout(() => {
+                    if (messageDiv.innerHTML.includes("dodged")) {
+                        messageDiv.innerHTML = `<span>🐾 a letter from a sad cat...</span>`;
+                    }
+                }, 1800);
+                return;
+            }
+            // actual YES message: "abadham cheppaku with dull emoji"
+            messageDiv.innerHTML = `<span>💔 abadham cheppaku 💔</span><span class="dull-emoji">😶‍🌫️🥀😔💧</span>`;
+            if (lyingCat) {
+                lyingCat.innerHTML = '😿💧🥀  💔🥀';
+                setTimeout(() => {
+                    if(lyingCat) lyingCat.innerHTML = '😿💧  😔💧';
+                }, 2200);
+            }
+            createDullEffect();
+            // disable dodge after yes? keep dodge but it's fine
+        }
+        
+        // ========== NO CLICK: show exact message ==========
+        function onNoClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            // required message: "naku thelusu nuvu nannu pattinchukovatle , time spend cheyatle and sad emoji"
+            messageDiv.innerHTML = `<span>😿 naku thelusu nuvu nannu pattinchukovatle , time spend cheyatle 😿</span><span class="dull-emoji">💔🥺😭💧</span>`;
+            if (lyingCat) {
+                lyingCat.innerHTML = '😭💧💧😿💔';
+                setTimeout(() => {
+                    if(lyingCat) lyingCat.innerHTML = '😿💧  😔💧';
+                }, 2700);
+            }
+            generateFallingTears();
+            // shake letter slightly
+            const letterCard = document.querySelector('.letter-card');
+            if (letterCard) {
+                letterCard.style.animation = 'shakeLetter 0.3s ease-in-out 2';
+                setTimeout(() => { if(letterCard) letterCard.style.animation = ''; }, 600);
+            }
+        }
+        
+        // ========== visual effects ==========
+        function generateFallingTears() {
+            for (let i = 0; i < 14; i++) {
+                const tear = document.createElement('div');
+                tear.textContent = '💧';
+                tear.classList.add('floating-tear');
+                tear.style.left = Math.random() * 100 + '%';
+                tear.style.fontSize = (16 + Math.random() * 20) + 'px';
+                tear.style.animationDuration = 1.5 + Math.random() * 2.2 + 's';
+                tear.style.opacity = 0.7 + Math.random() * 0.3;
+                document.body.appendChild(tear);
+                setTimeout(() => tear.remove(), 2800);
+            }
+        }
+        
+        function createDullEffect() {
+            for (let i = 0; i < 8; i++) {
+                const petal = document.createElement('div');
+                petal.textContent = '🥀';
+                petal.style.position = 'fixed';
+                petal.style.pointerEvents = 'none';
+                petal.style.fontSize = (18 + Math.random() * 16) + 'px';
+                petal.style.left = Math.random() * 100 + '%';
+                petal.style.top = '-20px';
+                petal.style.zIndex = '999';
+                petal.style.opacity = '0.6';
+                petal.style.animation = `fallTear 2.5s linear forwards`;
+                document.body.appendChild(petal);
+                setTimeout(() => petal.remove(), 2600);
+            }
+        }
+        
+        // ambient tears while cat lies (gentle atmosphere)
+        let ambientInterval;
+        function startAmbientTears() {
+            ambientInterval = setInterval(() => {
+                if (messageDiv.innerHTML.includes("naku thelusu") || messageDiv.innerHTML.includes("abadham")) {
+                    if (Math.random() > 0.55) {
+                        const extraTear = document.createElement('div');
+                        extraTear.textContent = '💧';
+                        extraTear.style.position = 'fixed';
+                        extraTear.style.left = (15 + Math.random() * 70) + '%';
+                        extraTear.style.top = '12%';
+                        extraTear.style.fontSize = '1.2rem';
+                        extraTear.style.pointerEvents = 'none';
+                        extraTear.style.opacity = '0.7';
+                        extraTear.style.animation = 'fallTear 1.9s linear forwards';
+                        document.body.appendChild(extraTear);
+                        setTimeout(() => extraTear.remove(), 1900);
+                    }
+                } else if (Math.random() > 0.85 && !messageDiv.innerHTML.includes("dodged")) {
+                    const softTear = document.createElement('div');
+                    softTear.textContent = '💧';
+                    softTear.style.position = 'fixed';
+                    softTear.style.left = (10 + Math.random() * 80) + '%';
+                    softTear.style.top = '8%';
+                    softTear.style.fontSize = '1rem';
+                    softTear.style.pointerEvents = 'none';
+                    softTear.style.opacity = '0.5';
+                    softTear.style.animation = 'fallTear 2.4s linear forwards';
+                    document.body.appendChild(softTear);
+                    setTimeout(() => softTear.remove(), 2400);
+                }
+            }, 3000);
+        }
+        
+        // ========== event binding ==========
+        window.addEventListener('mousemove', handlePointerMove);
+        window.addEventListener('touchmove', handlePointerMove, { passive: false });
+        window.addEventListener('touchstart', handleTouchStart, { passive: false });
+        
+        yesBtn.addEventListener('click', onYesClick);
+        noBtn.addEventListener('click', onNoClick);
+        
+        // prevent context menu on buttons (clean mobile)
+        yesBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+        noBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+        
+        // reset transform on resize/orientation change
+        window.addEventListener('resize', () => {
+            if (yesBtn && dodgeActive) yesBtn.style.transform = '';
+        });
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                if (yesBtn && dodgeActive) yesBtn.style.transform = '';
+            }, 60);
+        });
+        
+        // lying cat emotional blinking & expression updates
+        setInterval(() => {
+            if (lyingCat) {
+                const currentMsg = messageDiv.innerHTML;
+                if (currentMsg.includes("naku thelusu")) {
+                    lyingCat.innerHTML = '😭💧💧  💔😭';
+                    setTimeout(() => {
+                        if (lyingCat && messageDiv.innerHTML.includes("naku")) lyingCat.innerHTML = '😿💧  😔💧';
+                    }, 1600);
+                } else if (currentMsg.includes("abadham")) {
+                    lyingCat.innerHTML = '😿🥀💧  😔🥀';
+                    setTimeout(() => {
+                        if (lyingCat && messageDiv.innerHTML.includes("abadham")) lyingCat.innerHTML = '😿💧  😔💧';
+                    }, 1500);
+                } else if (!currentMsg.includes("dodged") && Math.random() > 0.75) {
+                    const original = lyingCat.innerHTML;
+                    if (original.includes('😿')) {
+                        lyingCat.innerHTML = '😿💧  😿💧';
+                        setTimeout(() => {
+                            if (lyingCat && !messageDiv.innerHTML.includes("naku") && !messageDiv.innerHTML.includes("abadham")) 
+                                lyingCat.innerHTML = '😿💧  😔💧';
+                        }, 500);
+                    }
+                }
+            }
+        }, 2600);
+        
+        // auto-reset message after 4.5s if idle (improves UX)
+        let msgResetTimeout;
+        function scheduleMsgReset() {
+            if (msgResetTimeout) clearTimeout(msgResetTimeout);
+            msgResetTimeout = setTimeout(() => {
+                if (messageDiv && !messageDiv.innerHTML.includes("naku thelusu") && !messageDiv.innerHTML.includes("abadham")) {
+                    if (messageDiv.innerHTML !== `<span>🐾 a letter from a sad cat...</span>`) {
+                        messageDiv.innerHTML = `<span>🐾 a letter from a sad cat...</span>`;
+                    }
+                }
+            }, 4800);
+        }
+        
+        const observer = new MutationObserver(() => {
+            scheduleMsgReset();
+        });
+        observer.observe(messageDiv, { childList: true, subtree: true, characterData: true });
+        
+        // start ambient tears
+        startAmbientTears();
+        
+        // extra safety: prevent accidental dodge after yes click becomes stable? keep responsive
+        console.log('💌 Sad cat lying on letter | YES button dodges on mobile + desktop | NO shows custom sad message');
+        
+        // small fix: ensure lying cat stays centered after any resize
+        window.addEventListener('resize', () => {
+            if (lyingCat) {
+                lyingCat.style.transform = 'translateX(-50%)';
+            }
+        });
+    })();
+</script>
+</body>
+</html>
